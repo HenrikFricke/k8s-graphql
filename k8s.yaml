@@ -41,6 +41,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/security-groups: sg-0d6314265d6ad7f7c
+    alb.ingress.kubernetes.io/healthcheck-path: /.well-known/apollo/server-health
   labels:
     app: k8s-graphql
 spec:
