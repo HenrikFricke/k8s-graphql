@@ -1,5 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server');
 
+const PORT = process.env.PORT || 4000;
+
 const typeDefs = gql`
   type Book {
     title: String
@@ -30,6 +32,6 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-server.listen().then(({ url }) => {
+server.listen({ port: PORT }).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });

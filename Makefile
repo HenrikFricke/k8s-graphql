@@ -1,15 +1,16 @@
 IMAGE_NAME ?= k8s-graphql
 VERSION ?= $(shell git rev-parse --short HEAD)
-
 AWS_REGION ?= eu-central-1
 AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query Account --output text)
 ECR_URL ?= $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+ECR_IMAGE_URL ?=$(ECR_URL)/$(IMAGE_NAME):$(VERSION)
+REGEX_ECR_IMAGE_URL ?=$(ECR_URL)\/$(IMAGE_NAME):$(VERSION)
 
 build:
 	docker build -t $(IMAGE_NAME) .
 
 run: build
-	docker run -it -p 4000:4000 $(IMAGE_NAME)
+	docker run -it -p 8080:80 $(IMAGE_NAME)
 
 login:
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(ECR_URL)
@@ -20,3 +21,8 @@ tag:
 
 push: login build tag
 	docker push $(ECR_URL)/$(IMAGE_NAME):$(VERSION)
+
+deploy:
+	cat k8s.yaml | \
+	sed "s/{{IMAGE}}/$(REGEX_ECR_IMAGE_URL)/g" | \
+	kubectl apply -f -

@@ -1,5 +1,5 @@
 FROM node:12.16.1
-ENV PORT 4000
+ENV PORT 80
 WORKDIR /app
 
 COPY ./package.json ./package-lock.json /app/
