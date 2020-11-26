@@ -23,6 +23,15 @@ push: login build tag
 	docker push $(ECR_URL)/$(IMAGE_NAME):$(VERSION)
 
 deploy:
-	cat k8s.yaml | \
-	sed "s/{{IMAGE}}/$(REGEX_ECR_IMAGE_URL)/g" | \
-	kubectl apply -f -
+	cat kubernetes/deployment.yaml | \
+		sed "s/{{IMAGE}}/$(REGEX_ECR_IMAGE_URL)/g" | \
+		kubectl apply -f -
+	kubectl apply -f kubernetes/service.yaml
+	kubectl apply -f kubernetes/ingress.yaml
+
+delete:
+	cat kubernetes/deployment.yaml | \
+		sed "s/{{IMAGE}}/$(REGEX_ECR_IMAGE_URL)/g" | \
+		kubectl delete -f -
+	kubectl delete -f kubernetes/service.yaml
+	kubectl delete -f kubernetes/ingress.yaml
