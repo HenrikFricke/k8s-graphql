@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+import { ApolloServer, gql } from 'apollo-server';
 
 const PORT = process.env.PORT || 4000;
 

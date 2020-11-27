@@ -5,6 +5,15 @@ AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query Account --output t
 ECR_URL ?= $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
 ECR_IMAGE_URL ?=$(ECR_URL)/$(IMAGE_NAME):$(VERSION)
 REGEX_ECR_IMAGE_URL ?=$(ECR_URL)\/$(IMAGE_NAME):$(VERSION)
+CLUSTER_NAME ?= eks-k8s-graphql
+
+export CLUSTER_NAME
+
+create-cluster:
+	npx cdk deploy
+
+get-kubeconfig:
+	aws eks --region $(AWS_REGION) update-kubeconfig --name $(CLUSTER_NAME)
 
 build:
 	docker build -t $(IMAGE_NAME) .
